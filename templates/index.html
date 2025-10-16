@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수목 동정 시스템</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        h1 { color: #2c3e50; }
+        h2 { color: #34495e; margin-bottom: 20px; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+        .btn { background-color: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
+        .btn:hover { background-color: #2980b9; }
+        .btn-skip { background-color: #95a5a6; }
+        .btn-skip:hover { background-color: #7f8c8d; }
+        .btn-restart { background-color: #e74c3c; margin-top: 30px; }
+        .btn-restart:hover { background-color: #c0392b; }
+        .result-list { list-style-type: none; padding: 0; margin-top: 20px; }
+        .result-list li { background-color: #ecf0f1; margin-bottom: 10px; padding: 15px; border-radius: 5px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 수목 동정 시스템</h1>
+        
+        {% if start_page %}
+            <!-- 시작 페이지 -->
+            <h2>버튼을 눌러 수목 동정을 시작하세요.</h2>
+            <a href="{% url 'question' %}"><button class="btn">시작하기</button></a>
+            
+        {% elif results is not none %}
+            <!-- 최종 결과 표시 -->
+            <h2>🔍 최종 식별 결과</h2>
+            {% if results %}
+                <p>총 {{ results|length }}개의 후보를 찾았습니다.</p>
+                <ul class="result-list">
+                    {% for item in results %}
+                        <li><strong>수종:</strong> {{ item.sujong }} (<strong>과:</strong> {{ item.gwa }})</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>일치하는 나무 정보를 찾지 못했습니다.</p>
+            {% endif %}
+            <a href="{% url 'restart' %}"><button class="btn btn-restart">처음부터 다시하기</button></a>
+
+        {% elif question %}
+            <!-- 질문 표시 -->
+            <h2>{{ question }}</h2>
+            <div class="btn-group">
+                {% for option in options %}
+                    <a href="?{{ next_params.urlencode }}&{{ next_col_name }}={{ option }}">
+                        <button class="btn">{{ option }}</button>
+                    </a>
+                {% endfor %}
+                {# '모르겠다'는 현재 URL 파라미터를 그대로 유지하며 다음 질문으로 넘어갑니다. #}
+                <a href="{% url 'question' %}?{{ next_params.urlencode }}&{{ next_col_name }}=">
+                    <button class="btn btn-skip">모르겠다</button>
+                </a>
+            </div>
+
+        {% endif %}
+    </div>
+</body>
+</html>
