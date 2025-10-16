@@ -36,3 +36,7 @@ venv/
 # IDEs
 .idea/
 .vscode/
+
+# Static files collected by collectstatic
+staticfiles/
+.DS_Store
