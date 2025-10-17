@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+*8s4)@0-v^p(-bti1w-$v358g@3(2272762-4upv6khicq#%v')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Render 배포 환경에서는 DEBUG를 False로 설정합니다.
@@ -29,7 +29,7 @@ if os.environ.get('RENDER'):
 else:
     DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
@@ -82,13 +82,6 @@ WSGI_APPLICATION = 'tree_project.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 # Render의 무료 인스턴스는 /var/data에 영구 디스크를 제공합니다.
-# SQLite 데이터베이스를 이곳에 저장하여 데이터가 유지되도록 합니다.
-DATA_DIR = BASE_DIR / 'data'
-if os.environ.get('RENDER'):
-    DATA_DIR = Path('/var/data')
-
-DATA_DIR.mkdir(parents=True, exist_ok=True)
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
